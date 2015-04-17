@@ -8,7 +8,8 @@ public class Graph {
 	Map<Integer, Vertex> G = new HashMap<Integer, Vertex>();
 
 	public void addEdge(int u, int v, int order) {
-
+		System.out.println("===========add Edge=============");
+		System.out.println(u + " " + v + " " + order);
 		Vertex V = G.get(u);
 		if (V == null) {
 			V = new Vertex();

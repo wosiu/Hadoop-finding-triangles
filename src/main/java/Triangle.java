@@ -20,14 +20,20 @@ public class Triangle {
 
 		public void map(Object key, Text value, Context context
 		) throws IOException, InterruptedException {
+			System.out.println("===========map in======================");
+			System.out.println(value);
 			String edgeStr = value.toString();
 			String[] edgeArr = edgeStr.split(" ");
 			int u = Integer.parseInt(edgeArr[0]);
 			int v = Integer.parseInt(edgeArr[1]);
 
+			if ( u == v ) {
+				return;
+			}
+
 			int hu = Utils.hash(u);
-			int hv = Utils.hash(u);
-			if ( hu > hv ) {
+			int hv = Utils.hash(v);
+			if (hu > hv) {
 				int temp = hu;
 				hu = hv;
 				hv = temp;
@@ -69,6 +75,9 @@ public class Triangle {
 		private TupleWritable makeEdge(int u, int v, int i) {
 			Writable[] writables = {new IntWritable(u), new IntWritable(v), new IntWritable(i)};
 			TupleWritable res= new TupleWritable(writables);
+
+			System.out.println("edge size: " + res.size() + ", content: " + res);
+
 			return res;
 		}
 
@@ -85,6 +94,9 @@ public class Triangle {
 		) throws IOException, InterruptedException {
 			Graph g = new Graph();
 
+			System.out.println("===========reduce in======================");
+			System.out.println("key: " + key + ", values: " + values);
+
 			for (TupleWritable val : values) {
 				IntWritable uwr = (IntWritable) val.get(0);
 				IntWritable vwr = (IntWritable) val.get(1);
@@ -93,6 +105,9 @@ public class Triangle {
 			}
 
 			List<String> triangles = g.getTriangles();
+			System.out.println("===========triangles======================");
+			System.out.println(triangles);
+
 			for (String t : triangles ) {
 				context.write(key, new Text(t));
 			}
