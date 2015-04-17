@@ -14,8 +14,6 @@ public class Triangle {
 	public static class Mapper
 			extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Text, DefaultTuple> {
 
-		private Text newKey = new Text();
-
 		public void map(Object key, Text value, Context context
 		) throws IOException, InterruptedException {
 			String edgeStr = value.toString();
@@ -59,13 +57,6 @@ public class Triangle {
 					context.write(makeKey(hu, i, hv), makeEdge(u, v, 3));
 				}
 			}
-			/*if ( hu == hv ) {
-				context.write(makeKey(hu, hu, hu), makeEdge(u, v, 4));
-				makeKey(hu, hu, hu);
-			} else {
-				context.write(makeKey(hu, hv, hv), makeEdge(u, v, 1));
-				context.write(makeKey(hu, hu, hv), makeEdge(u, v, 2));
-			}*/
 		}
 
 		private DefaultTuple makeEdge(int u, int v, int type) {
@@ -90,11 +81,6 @@ public class Triangle {
 			Graph g = new Graph();
 
 			for (Tuple arr : values) {
-				/*Writable val[] = arr.get();
-				IntWritable uwr = (IntWritable) val[0];
-				IntWritable vwr = (IntWritable) val[1];
-				IntWritable twr = (IntWritable) val[2];
-				g.addEdge(uwr.get(), vwr.get(), twr.get());*/
 				int u = (Integer) arr.get(0);
 				int v = (Integer) arr.get(1);
 				int i = (Integer) arr.get(2);

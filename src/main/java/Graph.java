@@ -1,8 +1,5 @@
 import java.util.*;
 
-/**
- * Created by m on 17.04.15.
- */
 public class Graph {
 
 	Map<Integer, Vertex> G = new HashMap<Integer, Vertex>();

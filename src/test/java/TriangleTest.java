@@ -1,14 +1,5 @@
 import org.junit.Test;
 
-import java.util.List;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
-
-/**
- * Created by m on 17.04.15.
- */
 public class TriangleTest {
 	@Test
 	public void createTest() throws Exception {
