@@ -3,18 +3,19 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.mapred.join.TupleWritable;
+import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class Triangle {
 
 	public static class Mapper
-			extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Text, TupleWritable> {
+			extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Text, ArrayWritable> {
 
 		private Text newKey = new Text();
 
@@ -72,11 +73,11 @@ public class Triangle {
 			}*/
 		}
 
-		private TupleWritable makeEdge(int u, int v, int i) {
+		private ArrayWritable makeEdge(int u, int v, int i) {
 			Writable[] writables = {new IntWritable(u), new IntWritable(v), new IntWritable(i)};
-			TupleWritable res= new TupleWritable(writables);
-
-			System.out.println("edge size: " + res.size() + ", content: " + res);
+			ArrayWritable res= new ArrayWritable(IntWritable.class, writables);
+			//res.set(writables);
+			System.out.println("edge " + Arrays.asList(res.toStrings()).toString() );
 
 			return res;
 		}
@@ -87,9 +88,9 @@ public class Triangle {
 	}
 
 	public static class Reducer
-			extends org.apache.hadoop.mapreduce.Reducer<Text, TupleWritable, Text, Text> {
+			extends org.apache.hadoop.mapreduce.Reducer<Text, ArrayWritable, Text, Text> {
 
-		public void reduce(Text key, Iterable<TupleWritable> values,
+		public void reduce(Text key, Iterable<ArrayWritable> values,
 						   Context context
 		) throws IOException, InterruptedException {
 			Graph g = new Graph();
@@ -97,10 +98,11 @@ public class Triangle {
 			System.out.println("===========reduce in======================");
 			System.out.println("key: " + key + ", values: " + values);
 
-			for (TupleWritable val : values) {
-				IntWritable uwr = (IntWritable) val.get(0);
-				IntWritable vwr = (IntWritable) val.get(1);
-				IntWritable twr = (IntWritable) val.get(2);
+			for (ArrayWritable arr : values) {
+				Writable val[] = arr.get();
+				IntWritable uwr = (IntWritable) val[0];
+				IntWritable vwr = (IntWritable) val[1];
+				IntWritable twr = (IntWritable) val[2];
 				g.addEdge(uwr.get(), vwr.get(), twr.get());
 			}
 
@@ -123,7 +125,7 @@ public class Triangle {
 		//job.setCombinerClass(Triangle.class);
 		job.setReducerClass(Reducer.class);
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(TupleWritable.class);
+		job.setOutputValueClass(ArrayWritable.class);
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
