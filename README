@@ -1,4 +1,5 @@
 1. zakładam że ta sama krawędź nie pojawi się 2 razy na wejściu (przy czym e(u,v) == e(v,u)) => na wejściu graf nieskierowany
 2. parametr b ustawiony na 10
 3. odpalanie:
-hadoop jar target/finding-triangles-1.0-SNAPSHOT.jar Triangle hdfs_path_input hdfs_path_output
+hadoop jar target/finding-triangles-1.0-SNAPSHOT-jar-with-dependencies.jar Triangle 
+
